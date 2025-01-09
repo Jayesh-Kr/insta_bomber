@@ -6,7 +6,7 @@ import time
 
 # Your Instagram credentials
 INSTAGRAM_USERNAME = 'rj.tk_'
-INSTAGRAM_PASSWORD = '@raj1234'
+INSTAGRAM_PASSWORD = 'password'
 
 def login(driver):
     print("Navigating to Instagram login page...")
