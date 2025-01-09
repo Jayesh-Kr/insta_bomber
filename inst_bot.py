@@ -29,7 +29,7 @@ def login_to_instagram(driver, username, password):
         print(f"Error during login: {e}")
         raise
 
-def navigate_and_start_message(driver, recipient):
+def navigate_and_start_message(driver, recipient, message, repeat_count):
     """Navigate to new message page, handle popup, and start new message"""
     try:
         # Go to new message page
@@ -65,15 +65,40 @@ def navigate_and_start_message(driver, recipient):
             recipient_input.send_keys(recipient)
             time.sleep(2)
             
-            # Wait for the search results to appear and click the first result
-            search_results = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[@role='dialog']//div[@role='button']"))
+            # Find and click the first checkbox in the search results
+            first_checkbox = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@type='checkbox']"))
             )
-            search_results.click()
+            first_checkbox.click()
             time.sleep(1)
 
+            # Click on the Chat div
+            chat_button = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[text()='Chat']"))
+            )
+            chat_button.click()
+            time.sleep(2)
+
+            # Send the message multiple times
+            try:
+                message_input = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[text()='Message...']"))
+                )
+                
+                for i in range(repeat_count):
+                    message_input.send_keys(message)
+                    message_input.send_keys(Keys.RETURN)
+                    print(f"Message {i + 1} sent: {message}")
+                    time.sleep(1)  # Wait between messages to avoid rate limiting
+                
+                print(f"All {repeat_count} messages sent successfully!")
+
+            except Exception as e:
+                print(f"Error sending messages: {e}")
+                raise
+
         except Exception as e:
-            print(f"Error entering recipient: {e}")
+            print(f"Error in recipient selection process: {e}")
             raise
 
     except Exception as e:
@@ -85,6 +110,8 @@ def main():
     USERNAME = 'rj.tk_'
     PASSWORD = '@raj1234'
     RECIPIENT = 'Fucker'
+    MESSAGE = 'Test message'
+    REPEAT_COUNT = 1
 
     # Initialize Edge WebDriver
     service = Service(r"C:\\Users\\HP\\Downloads\\edgedriver_win32\\msedgedriver.exe")  # Replace with your Edge driver path
@@ -97,7 +124,7 @@ def main():
 
         # Execute login and navigation
         login_to_instagram(driver, USERNAME, PASSWORD)
-        navigate_and_start_message(driver, RECIPIENT)
+        navigate_and_start_message(driver, RECIPIENT, MESSAGE, REPEAT_COUNT)
         
         # Keep the browser open for a few seconds to see the result
         time.sleep(5)
