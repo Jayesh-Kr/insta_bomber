@@ -82,7 +82,7 @@ def navigate_and_start_message(driver, recipient, message, repeat_count):
             # Send the message multiple times
             try:
                 message_input = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, "//div[text()='Message...']"))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[aria-placeholder="Message..."]'))
                 )
                 
                 for i in range(repeat_count):
@@ -111,7 +111,7 @@ def main():
     PASSWORD = '@raj1234'
     RECIPIENT = 'Fucker'
     MESSAGE = 'Test message'
-    REPEAT_COUNT = 1
+    REPEAT_COUNT = 5
 
     # Initialize Edge WebDriver
     service = Service(r"C:\\Users\\HP\\Downloads\\edgedriver_win32\\msedgedriver.exe")  # Replace with your Edge driver path
