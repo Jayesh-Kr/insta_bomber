@@ -105,13 +105,27 @@ def navigate_and_start_message(driver, recipient, message, repeat_count):
         print(f"Error in navigation process: {e}")
         raise
 
+def get_user_input():
+    username = input("Enter your Instagram username: ")
+    password = input("Enter your Instagram password: ")
+    recipient = input("Enter recipient's username: ")
+    message = input("Enter the message to send: ")
+    
+    while True:
+        try:
+            repeat_count = int(input("Enter number of times to send message: "))
+            if repeat_count > 0:
+                break
+            print("Please enter a positive number")
+        except ValueError:
+            print("Please enter a valid number")
+    
+    return username, password, recipient, message, repeat_count
+
+
 def main():
-    # Your Instagram credentials
-    USERNAME = 'rj.tk_'
-    PASSWORD = '@raj1234'
-    RECIPIENT = 'Fucker'
-    MESSAGE = 'Test message'
-    REPEAT_COUNT = 5
+    # Get user inputs
+    USERNAME, PASSWORD, RECIPIENT, MESSAGE, REPEAT_COUNT = get_user_input()
 
     # Initialize Edge WebDriver
     service = Service(r"C:\\Users\\HP\\Downloads\\edgedriver_win32\\msedgedriver.exe")  # Replace with your Edge driver path
