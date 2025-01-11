@@ -4,6 +4,7 @@ from selenium.webdriver.edge.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 
 
@@ -30,41 +31,48 @@ def login_to_instagram(driver, username, password):
         print(f"Error during login: {e}")
         raise
 
-def navigate_to_reel(driver,recipient):
+def navigate_to_reel(driver,recipient,num_reels):
     try:
         driver.get('https://www.instagram.com/reels/')
         time.sleep(3)
-        try:
-            share_button = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'svg[aria-label="Share"]'))
-            )
-            share_button.click()
-            time.sleep(2)
-        except:
-            print("No share button found or already handled")
+        for i in range(num_reels):
+            try:
+                share_button = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'svg[aria-label="Share"]'))
+                )
+                share_button.click()
+                time.sleep(2)
+            except:
+                print("No share button found or already handled")
 
-        try:
-            recipient_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.NAME, 'queryBox'))
-            )
-            recipient_input.send_keys(recipient)
-            time.sleep(2)
-            
-            # Find and click the first checkbox in the search results
-            first_checkbox = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//input[@type='checkbox']"))
-            )
-            first_checkbox.click()
-            time.sleep(1)
+            try:
+                recipient_input = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.NAME, 'queryBox'))
+                )
+                recipient_input.send_keys(recipient)
+                time.sleep(2)
+                
+                # Find and click the first checkbox in the search results
+                first_checkbox = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//input[@type='checkbox']"))
+                )
+                first_checkbox.click()
+                time.sleep(1)
 
-            # Click on the Send div
-            send_button = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[text()='Send']"))
-            )
-            send_button.click()
-            time.sleep(2)
-        except:
-            print("Some error occured...");
+                # Click on the Send div
+                send_button = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[text()='Send']"))
+                )
+                send_button.click()
+                time.sleep(2)
+
+                if i < num_reels - 1:
+                    actions = ActionChains(driver)
+                    actions.send_keys(Keys.ARROW_DOWN).perform()
+                    time.sleep(2)
+            except Exception as e:
+                print(f"Error sharing reel {i+1}: {e}")
+                continue
     except:
         print('No reel section found')
         
@@ -81,7 +89,7 @@ def get_user_input():
 
 def main():
     # Get user inputs
-    # USERNAME, PASSWORD = get_user_input()
+    USERNAME, PASSWORD = get_user_input()
 
     # Initialize Edge WebDriver
     service = Service(r"C:\\Users\\HP\\Downloads\\edgedriver_win32\\msedgedriver.exe")  # Replace with your Edge driver path
@@ -93,8 +101,8 @@ def main():
         driver.implicitly_wait(5)
 
         # Execute login and navigation
-        login_to_instagram(driver, 'rj.tk_', '@raj1234')
-        navigate_to_reel(driver,'Fucker')
+        login_to_instagram(driver, USERNAME, PASSWORD)
+        navigate_to_reel(driver,'Fucker',3)
         
         # Keep the browser open for a few seconds to see the result
         time.sleep(5)
