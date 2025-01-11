@@ -89,7 +89,7 @@ def navigate_and_start_message(driver, recipient, message, repeat_count):
                     message_input.send_keys(message)
                     message_input.send_keys(Keys.RETURN)
                     print(f"Message {i + 1} sent: {message}")
-                    time.sleep(1)  # Wait between messages to avoid rate limiting
+                    time.sleep(0.25)  # Wait between messages to avoid rate limiting
                 
                 print(f"All {repeat_count} messages sent successfully!")
 
